@@ -34,6 +34,13 @@ class NotFound(OutbrainError):
     pass
 
 
+class TooManyRequests(OutbrainError):
+    """
+    429 HTTP Errors
+    """
+    pass
+
+
 class ServerError(OutbrainError):
     """
     500 HTTP Errors
