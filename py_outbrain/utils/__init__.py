@@ -4,13 +4,14 @@ from datetime import date, datetime
 
 import dateutil.parser
 
-from py_outbrain.errors import (BadRequest, Unauthorized,
+from py_outbrain.errors import (BadRequest, Unauthorized, TooManyRequests,
                               OutbrainError, ServerError, NotFound)
 
 ERROR_MAPPING = {
     400: BadRequest,
     401: Unauthorized,
     404: NotFound,
+    429: TooManyRequests,
     500: ServerError,
 }
 
