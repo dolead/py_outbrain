@@ -9,8 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class OutbrainClient:
-    def __init__(self, access_token, username, password, base_url):
+    def __init__(self, access_token, username, password, base_url=None):
         self.base_url = base_url or 'https://api.outbrain.com/amplify/v0.1'
+        self.username = username
+        self.password = password
 
         if not access_token:
             access_token = self.generate_new_token(username, password)
@@ -51,6 +53,6 @@ class OutbrainClient:
         except Unauthorized:
             if not allow_refresh:
                 raise
-            self.generate_new_token()
+            self.generate_new_token(self.username, self.password)
             return self.execute(method, uri, query_params=query_params,
                                 raw=raw, allow_refresh=False, **payload)
