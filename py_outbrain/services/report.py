@@ -34,16 +34,16 @@ class ReportService(AccountScopedService):
 
     def fetch(self, url, start_date, end_date, **filters):
         real_filters = self.__prepare_filters(start_date, end_date, **filters)
-        res =  self.execute('GET', self.build_uri(url),
+        res = self.execute('GET', self.build_uri(url),
                             query_params=real_filters)
         return res
 
 
-class CampaignSummaryReport(ReportService):
+class PeriodicReport(ReportService):
 
-    def fetch(self, element_id, start_date, end_date, periodic='monthly', campaignId=None):
+    def fetch(self, element_id, start_date, end_date, periodic='monthly', campaign_id=None,
+              by_campaign=False):
         self.endpoint = 'reports/marketers'
-        url = '{}/campaigns/periodic'.format(element_id)
         query_params = {
             'includeConversionDetails': True,
             'conversionsByClickDate': True,
@@ -51,8 +51,12 @@ class CampaignSummaryReport(ReportService):
             'to': end_date,
             'breakdown': periodic
         }
-        if campaignId:
-            query_params['campaignId'] = campaignId
+        if campaign_id:
+            query_params['campaignId'] = campaign_id
+        if by_campaign:
+            url = '{}/campaigns/periodic'.format(element_id)
+        else:
+            url = '{}/periodic'.format(element_id)
 
         return self.execute('GET', self.build_uri(url),
                             query_params=query_params)
