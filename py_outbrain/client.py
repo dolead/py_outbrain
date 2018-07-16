@@ -3,7 +3,8 @@ import logging
 import requests
 import requests.auth
 
-from py_outbrain.errors import Unauthorized
+from py_outbrain.errors import Unauthorized, TooManyRequests, \
+    TooManyAuthRequests
 from py_outbrain.utils import parse_response
 
 logger = logging.getLogger(__name__)
@@ -38,7 +39,11 @@ class OutbrainClient:
         login_url = '{}/login'.format(self.base_url)
 
         basic_auth = requests.auth.HTTPBasicAuth(self.username, self.password)
-        r = requests.get(login_url, auth=basic_auth)
+        try:
+            r = requests.get(login_url, auth=basic_auth)
+            parse_response(r)
+        except TooManyRequests:
+            raise TooManyAuthRequests('Rate limit reached for token requests.')
         results = json.loads(r.text)
         token = results['OB-TOKEN-V1']
         self.access_token = token
@@ -82,6 +87,6 @@ class OutbrainClient:
         except Unauthorized:
             if not allow_refresh:
                 raise
-            self.generate_new_token()
-            return self.execute(method, uri, query_params=query_params,
-                                raw=raw, allow_refresh=False, **payload)
+            if self.generate_new_token():
+                return self.execute(method, uri, query_params=query_params,
+                                    raw=raw, allow_refresh=False, **payload)

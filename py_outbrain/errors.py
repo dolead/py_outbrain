@@ -46,3 +46,9 @@ class ServerError(OutbrainError):
     500 HTTP Errors
     """
     pass
+
+
+class TooManyAuthRequests(BaseException):
+    """
+    429 HTTP Errors for token requests
+    """
