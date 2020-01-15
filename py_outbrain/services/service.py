@@ -30,7 +30,7 @@ class AccountService(BaseService):
                                   query_params=params)
             yield from result['campaigns']
             params['offset'] += len(result['campaigns'])
-            if params['offset'] >= params['totalCount']:
+            if params['offset'] >= result['totalCount']:
                 break
 
     def get_campaigns(self, element_id):
