@@ -3,6 +3,7 @@ import logging
 from .base import BaseService, CrudService
 
 logger = logging.getLogger(__name__)
+MAX_CAMPAIGNS_PER_REQUEST = 50
 
 
 class AccountService(BaseService):
@@ -20,9 +21,20 @@ class AccountService(BaseService):
     def update(self, element_id, **attrs):
         return self.execute('POST', self.build_uri(element_id), **attrs)
 
-    def get_campaigns(self, element_id):
+    def _get_campaigns(self, element_id):
+        params = {'limit': MAX_CAMPAIGNS_PER_REQUEST, 'offset': 0}
         url = '{}/campaigns'.format(element_id)
-        return self.execute('GET', self.build_uri(url))['campaigns']
+        do_continue = True
+        while do_continue:
+            result = self.execute('GET', self.build_uri(url),
+                                  query_params=params)
+            yield from result['campaigns']
+            params['offset'] += len(result['campaigns'])
+            if params['offset'] >= params['totalCount']:
+                break
+
+    def get_campaigns(self, element_id):
+        return list(self._get_campaigns(element_id))
 
 
 class CampaignService(CrudService):
