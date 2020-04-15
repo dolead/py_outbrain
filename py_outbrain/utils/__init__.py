@@ -1,11 +1,9 @@
 import re
-import json
 from datetime import date, datetime
 
 import dateutil.parser
-
-from py_outbrain.errors import (BadRequest, Unauthorized, TooManyRequests,
-                              OutbrainError, ServerError, NotFound)
+from py_outbrain.errors import (BadRequest, NotFound, OutbrainError,
+                                ServerError, TooManyRequests, Unauthorized)
 
 ERROR_MAPPING = {
     400: BadRequest,
@@ -56,7 +54,7 @@ def parse_response(response):
             error = response.json().get('errors')
 
         raise ERROR_MAPPING.get(response.status_code, OutbrainError)(error,
-                                                                    response)
+                                                                     response)
     return __cast(response.json())
 
 

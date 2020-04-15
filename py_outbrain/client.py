@@ -1,10 +1,10 @@
 import json
 import logging
+
 import requests
 import requests.auth
-
-from py_outbrain.errors import Unauthorized, TooManyRequests, \
-    TooManyAuthRequests
+from py_outbrain.errors import (TooManyAuthRequests, TooManyRequests,
+                                Unauthorized)
 from py_outbrain.utils import parse_response
 
 logger = logging.getLogger(__name__)
@@ -42,8 +42,9 @@ class OutbrainClient:
         try:
             r = requests.get(login_url, auth=basic_auth)
             parse_response(r)
-        except TooManyRequests:
-            raise TooManyAuthRequests('Rate limit reached for token requests.')
+        except TooManyRequests as too_many_req_err:
+            raise TooManyAuthRequests('Rate limit reached for token requests.',
+                                      too_many_req_err.response)
         results = json.loads(r.text)
         token = results['OB-TOKEN-V1']
         self.access_token = token

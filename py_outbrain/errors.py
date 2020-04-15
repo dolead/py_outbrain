@@ -6,6 +6,7 @@ class OutbrainError(BaseException):
     def __init__(self, error, response):
         self.error = error
         self.response = response
+        super().__init__()
 
     def __str__(self):
         return '{} [{}]: {}'.format(self.__class__.__name__,
@@ -17,38 +18,41 @@ class BadRequest(OutbrainError):
     """
     400 HTTP Errors
     """
-    pass
 
 
 class Unauthorized(OutbrainError):
     """
     401 HTTP Errors
     """
-    pass
 
 
 class NotFound(OutbrainError):
     """
     404 HTTP Errors
     """
-    pass
 
 
 class TooManyRequests(OutbrainError):
     """
     429 HTTP Errors
     """
-    pass
+
+    def __init__(self, error, response):
+        super().__init__(error, response)
+        try:
+            self.rate_limit_msec_left = int(
+                    response.headers['rate-limit-msec-left'])
+        except (TypeError, ValueError, KeyError):
+            self.rate_limit_msec_left = 0
 
 
 class ServerError(OutbrainError):
     """
     500 HTTP Errors
     """
-    pass
 
 
-class TooManyAuthRequests(BaseException):
+class TooManyAuthRequests(TooManyRequests):
     """
     429 HTTP Errors for token requests
     """
