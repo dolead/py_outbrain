@@ -4,6 +4,7 @@ from .base import BaseService, CrudService
 
 logger = logging.getLogger(__name__)
 MAX_CAMPAIGNS_PER_REQUEST = 50
+MAX_PROMOTED_LINKS_PER_REQUEST = 100
 
 
 class AccountService(BaseService):
@@ -22,16 +23,9 @@ class AccountService(BaseService):
         return self.execute('POST', self.build_uri(element_id), **attrs)
 
     def _get_campaigns(self, element_id):
-        params = {'limit': MAX_CAMPAIGNS_PER_REQUEST, 'offset': 0}
-        url = '{}/campaigns'.format(element_id)
-        do_continue = True
-        while do_continue:
-            result = self.execute('GET', self.build_uri(url),
-                                  query_params=params)
-            yield from result['campaigns']
-            params['offset'] += len(result['campaigns'])
-            if params['offset'] >= result['totalCount']:
-                break
+        child_endpoint = 'campaigns'
+        params = {'limit': MAX_CAMPAIGNS_PER_REQUEST}
+        yield from self.get_child_elements(element_id, child_endpoint, params)
 
     def get_campaigns(self, element_id):
         return list(self._get_campaigns(element_id))
@@ -42,3 +36,16 @@ class CampaignService(CrudService):
     def __init__(self, client, account_id):
         super().__init__(client, account_id)
         self.endpoint = 'campaigns'
+
+    def get_promoted_links(self, element_id):
+        child_endpoint = 'promotedLinks'
+        params = {'limit': MAX_PROMOTED_LINKS_PER_REQUEST}
+        return list(self.get_child_elements(element_id, child_endpoint,
+                                            params))
+
+
+class PromotedLinkService(CrudService):
+
+    def __init__(self, client, account_id):
+        super().__init__(client, account_id)
+        self.endpoint = 'promotedLinks'

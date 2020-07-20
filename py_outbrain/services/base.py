@@ -24,6 +24,19 @@ class BaseService:
         return self.client.execute(method, uri,
                                    query_params=query_params, **payload)
 
+    def get_child_elements(self, element_id, child_endpoint, params):
+        if 'offset' not in params:
+            params['offset'] = 0
+        url = '{}/{}'.format(element_id, child_endpoint)
+        do_continue = True
+        while do_continue:
+            result = self.execute('GET', self.build_uri(url),
+                                  query_params=params)
+            yield from result[child_endpoint]
+            params['offset'] += len(result[child_endpoint])
+            if params['offset'] >= result['totalCount']:
+                break
+
 
 class AccountScopedService(BaseService):
 
