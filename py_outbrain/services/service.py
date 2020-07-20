@@ -46,6 +46,6 @@ class CampaignService(CrudService):
 
 class PromotedLinkService(CrudService):
 
-    def __init__(self, client, account_id):
-        super().__init__(client, account_id)
+    def __init__(self, client):
+        super().__init__(client)
         self.endpoint = 'promotedLinks'
