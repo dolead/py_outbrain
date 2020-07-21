@@ -33,7 +33,7 @@ class AccountService(BaseService):
 
 class CampaignService(CrudService):
 
-    def __init__(self, client, account_id):
+    def __init__(self, client, account_id=None):
         super().__init__(client, account_id)
         self.endpoint = 'campaigns'
 
