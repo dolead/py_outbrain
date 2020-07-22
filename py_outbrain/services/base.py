@@ -28,8 +28,7 @@ class BaseService:
         if 'offset' not in params:
             params['offset'] = 0
         url = '{}/{}'.format(element_id, child_endpoint)
-        do_continue = True
-        while do_continue:
+        while True:
             result = self.execute('GET', self.build_uri(url),
                                   query_params=params)
             yield from result[child_endpoint]
