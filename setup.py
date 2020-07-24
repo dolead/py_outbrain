@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='py_outbrain',
-    version='0.0.7',
+    version='0.0.8',
     packages=['py_outbrain', 'py_outbrain.utils', 'py_outbrain.services'],
     url='https://github.com/dolead/py_outbrain',
     keywords='outbrain api',

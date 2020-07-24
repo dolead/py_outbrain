@@ -41,8 +41,8 @@ class ReportService(AccountScopedService):
 
 class PeriodicReport(ReportService):
 
-    def fetch(self, element_id, start_date, end_date, periodic='monthly', campaign_id=None,
-              by_campaign=False):
+    def fetch(self, element_id, start_date, end_date, periodic='monthly',
+              campaign_id=None, by_campaign=False, by_promoted_link=False):
         self.endpoint = 'reports/marketers'
         query_params = {
             'includeConversionDetails': True,
@@ -51,9 +51,11 @@ class PeriodicReport(ReportService):
             'to': end_date,
             'breakdown': periodic
         }
-        if campaign_id:
+        if campaign_id and not by_promoted_link:
             query_params['campaignId'] = campaign_id
-        if by_campaign:
+        if by_promoted_link:
+            url = '{}/campaigns/{}/periodicContent'.format(campaign_id)
+        elif by_campaign:
             url = '{}/campaigns/periodic'.format(element_id)
         else:
             url = '{}/periodic'.format(element_id)
