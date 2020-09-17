@@ -35,7 +35,7 @@ class ReportService(AccountScopedService):
     def fetch(self, url, start_date, end_date, **filters):
         real_filters = self.__prepare_filters(start_date, end_date, **filters)
         res = self.execute('GET', self.build_uri(url),
-                            query_params=real_filters)
+                           query_params=real_filters)
         return res
 
 
@@ -54,7 +54,8 @@ class PeriodicReport(ReportService):
         if campaign_id and not by_promoted_link:
             query_params['campaignId'] = campaign_id
         if by_promoted_link:
-            url = '{}/campaigns/{}/periodicContent'.format(campaign_id)
+            url = '{}/campaigns/{}/periodicContent'.format(element_id,
+                                                           campaign_id)
         elif by_campaign:
             url = '{}/campaigns/periodic'.format(element_id)
         else:
