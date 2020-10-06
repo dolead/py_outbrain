@@ -1,13 +1,13 @@
 import logging
 from datetime import datetime, date
 
-from py_outbrain.services.base import AccountScopedService
+from py_outbrain.services.base import BaseService
 
 
 logger = logging.getLogger(__name__)
 
 
-class ReportService(AccountScopedService):
+class ReportService(BaseService):
     allowed_filters = ()
 
     def __prepare_filters(self, start, end, **filters):
