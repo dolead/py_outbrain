@@ -33,13 +33,15 @@ class AccountService(BaseService):
 
 class CampaignService(CrudService):
 
-    def __init__(self, client, account_id=None):
-        super().__init__(client, account_id)
+    def __init__(self, client):
+        super().__init__(client)
         self.endpoint = 'campaigns'
 
-    def get_promoted_links(self, element_id):
+    def get_promoted_links(self, element_id, extra_fields=None):
         child_endpoint = 'promotedLinks'
         params = {'limit': MAX_PROMOTED_LINKS_PER_REQUEST}
+        if extra_fields:
+            params['extraFields'] = extra_fields
         return list(self.get_child_elements(element_id, child_endpoint,
                                             params))
 

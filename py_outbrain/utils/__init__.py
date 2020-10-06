@@ -52,6 +52,7 @@ def parse_response(response):
                 error = response.text
         elif 'application/json' in response.headers['Content-Type']:
             error = response.json().get('errors')
+            error = error or response.json().get('message')
 
         raise ERROR_MAPPING.get(response.status_code, OutbrainError)(error,
                                                                      response)

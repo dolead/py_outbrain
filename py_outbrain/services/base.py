@@ -37,20 +37,17 @@ class BaseService:
                 break
 
 
-class AccountScopedService(BaseService):
-
-    def __init__(self, client, account_id):
-        super().__init__(client)
-        self.account_id = account_id
-
-
-class CrudService(AccountScopedService):
+class CrudService(BaseService):
 
     def list(self):
         return self.execute('GET', self.build_uri())
 
-    def get(self, element_id):
-        return self.execute('GET', self.build_uri(element_id))
+    def get(self, element_id, extra_fields=None):
+        params = None
+        if extra_fields:
+            params = {'extraFields': extra_fields}
+        return self.execute('GET', self.build_uri(element_id),
+                            query_params=params)
 
     def create(self, **attrs):
         return self.execute('POST', self.build_uri(), **attrs)
