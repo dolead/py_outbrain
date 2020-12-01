@@ -22,7 +22,8 @@ class BaseService:
 
     def execute(self, method, uri, query_params=None, **payload):
         return self.client.execute(method, uri,
-                                   query_params=query_params, **payload)
+                                   query_params=query_params,
+                                   **payload)
 
     def get_child_elements(self, element_id, child_endpoint, params):
         if 'offset' not in params:

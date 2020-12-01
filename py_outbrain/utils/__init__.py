@@ -1,5 +1,6 @@
 import re
 from datetime import date, datetime
+from itertools import chain
 
 import dateutil.parser
 from py_outbrain.errors import (BadRequest, NotFound, OutbrainError,
@@ -51,8 +52,10 @@ def parse_response(response):
             else:
                 error = response.text
         elif 'application/json' in response.headers['Content-Type']:
-            error = response.json().get('errors')
-            error = error or response.json().get('message')
+            jresp = response.json()
+            error = jresp.get('errors') or jresp.get('message')
+            error = '\n'.join(chain([error],
+                                    jresp.get('validationErrors', [])))
 
         raise ERROR_MAPPING.get(response.status_code, OutbrainError)(error,
                                                                      response)

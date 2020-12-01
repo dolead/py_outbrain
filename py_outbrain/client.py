@@ -81,6 +81,7 @@ class OutbrainClient:
             data = None
             if payload:
                 data = payload if raw else json.dumps(payload)
+            import ipdb; ipdb.sset_trace()
             result = requests.request(method, url, data=data,
                                       params=query_params,
                                       headers=headers)
