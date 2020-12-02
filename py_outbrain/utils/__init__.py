@@ -59,6 +59,8 @@ def parse_response(response):
 
         raise ERROR_MAPPING.get(response.status_code, OutbrainError)(error,
                                                                      response)
+    if response.text == '' and response.ok:
+        return ''
     return __cast(response.json())
 
 

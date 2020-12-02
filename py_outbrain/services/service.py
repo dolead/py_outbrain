@@ -97,3 +97,7 @@ class PromotedLinkService(CrudService):
     def __init__(self, client):
         super().__init__(client)
         self.endpoint = 'promotedLinks'
+
+    def create(self, campaign_id, **attrs):
+        url = 'campaigns/{}/{}'.format(campaign_id, self.endpoint)
+        return self.execute('POST', url, **attrs)
